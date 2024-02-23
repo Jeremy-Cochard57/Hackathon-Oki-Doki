@@ -12,6 +12,8 @@ def verifier_adresse(adresse):
         """
 
 from geopy.geocoders import Nominatim
+from geopy.adapters import AioHTTPAdapter
+
 
 def verifier_adresse(adresse):
     geolocator = Nominatim(user_agent="app hackathon") #instance

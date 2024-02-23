@@ -1,4 +1,6 @@
 geopy
+geopy[aiohttp]
+Geocoder
+
 
 pygeocoder
-Geocoder
