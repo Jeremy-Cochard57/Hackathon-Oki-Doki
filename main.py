@@ -1,6 +1,6 @@
 import os
 
-from fonction import verifier_adresse
+from fonction import verifier_adresse,adresse_similaire
 
 stop = True
 while stop:
@@ -9,9 +9,13 @@ while stop:
     rue = input("Veuillez entrer la rue : ")
     ville = input("Veuillez entrer la ville : ")
     adresse = numéro + " " + rue + " " + ville
-    valide, message = verifier_adresse(adresse)
-    print(message)
-    print(adresse)
+    
+    valide, message = adresse_similaire(adresse)
+    if valide:
+        for m in message:
+            print(m)
+    else:
+        print("Aucune adresse trouvée")
     
 
     if adresse == "stop":

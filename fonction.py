@@ -19,7 +19,18 @@ def verifier_adresse(adresse):
 
     ##return location
     if location:
-        return True, "Adresse valide !\nVeuillez vous rendre à cette adresse : " + str(location)
+        return "Adresse valide !\nVeuillez vous rendre à cette adresse : " + str(location)
     else:
-        return False, "Adresse invalide. Veuillez vérifier et réessayer."
+        return "Adresse invalide. Veuillez vérifier et réessayer."
         
+def adresse_similaire(adresse):
+    geolocator = Nominatim(user_agent="app hackathon") #instance
+    results = geolocator.geocode(adresse, exactly_one=False,addressdetails=True)# Pour obtenir plusieurs résultats si disponibles
+
+    if results:
+        list_adresse=[]
+        for result in results:
+          list_adresse.append(result)
+        return True, (list_adresse)
+    else:
+        return False, ""
