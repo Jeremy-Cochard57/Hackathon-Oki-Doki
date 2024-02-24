@@ -27,10 +27,19 @@ while stop:
     if adresse == "stop":
         stop = False"""
     
-    adresse=input("Veuillez entrer votre localisation : ")
-    localisation_adresse=asyncio.run(get_adresse(adresse))
-    localisation_coordonnees_input=asyncio.run(get_coordonnees(localisation_adresse))
-    _distance=distance(localisation_coordonnees[0][0], localisation_coordonnees[0][1], localisation_coordonnees_input[0][0], localisation_coordonnees_input[0][1])
+    adresse_intervention=input("Veuillez entrer votre localisation : ")
+    localisation_adresse=asyncio.run(get_adresse(adresse_intervention)) #cas 1 : 12, rue du Faubourg Saint-Antoine, 75011 Paris #cas 2 : 55 Rue des Peupliers
 
-    print("Votre emplacement est : " + str(localisation_adresse)+"\nCoordonnées : " + str(localisation_coordonnees))
-    print(_distance)
+    #list_coo=[]
+    #list_coo=asyncio.run(get_coordonnees(adresse_intervention))
+
+    #localisation_coordonnees_input=asyncio.run(get_coordonnees(localisation_adresse))
+    #_distance=distance(localisation_coordonnees[0][0], localisation_coordonnees[0][1], list_coo[0][0], list_coo[0][1])
+
+
+    if localisation_adresse:
+        #print("Votre emplacement est : " + str(localisation_adresse)+"\nCoordonnées")
+        for i in localisation_adresse:
+            print(str(i))
+    #print(_distance)
+#print(list_coo)

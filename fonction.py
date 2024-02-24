@@ -87,11 +87,20 @@ async def get_coordonnees(adresse):#Coroutine principale de asyncio
     _localisation_lon_lat = await recup_coordonnees(adresse)
     return _localisation_lon_lat
 
-def distance(coord_a_a, coord_a_b, coord_b_a, coord_b_b):
+"""def distance(coord_a_a, coord_a_b, coord_b_a, coord_b_b):
     _distance_lat=math.dist(coord_a_a, coord_b_a)
     _distance_lon=math.dist(coord_a_b, coord_b_b)
     return _distance_lat, _distance_lon
+    """
 
-def compare_dist(distance_lat, distance_lon):
-    return None
+def compare_dist(coordonnes_samu, list_coordonnes):
+    result_list_coordonnes=""
+    result_list_coordonnes=i
+    for i in list_coordonnes:
+        
+        if i>result_list_coordonnes:
+            result_list_coordonnes=i
+
+    return list_coordonnes
+
 
