@@ -4,7 +4,7 @@ from aiohttp import ClientSession
 
 async def recup_coordonnees(address):#Fonction asynchroniser pour faire des requêtes en arriere plans
     async with ClientSession() as session:
-        async with session.get(f"https://nominatim.openstreetmap.org/search?q={address}&format=json") as resultatJSON:
+        async with session.get(f"https://maps.googleapis.com/maps/api/geocode/json?address={address}") as resultatJSON:
             data = await resultatJSON.json()#Attendre le traitement du fichier JSON
             if data:
                 localisation=[]
@@ -33,3 +33,6 @@ localisation_lon_lat=asyncio.run(main(adresse))
 print("Votre emplacement est : " + str(localisation_lon_lat))
 
 
+
+
+    
