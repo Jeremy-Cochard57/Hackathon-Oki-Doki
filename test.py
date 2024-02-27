@@ -1,35 +1,18 @@
-import asyncio
-from geopy.geocoders import Nominatim
-from aiohttp import ClientSession
+import math
 
-async def recup_coordonnees(address):#Fonction asynchroniser pour faire des requêtes en arriere plans
-    async with ClientSession() as session:
-        async with session.get(f"https://nominatim.openstreetmap.org/search?q={address}&format=json") as resultatJSON:
-            data = await resultatJSON.json()#Attendre le traitement du fichier JSON
-            if data:
-                localisation=[]
-                recup_lon=[]
-                recup_lat=[]
-                recup_lon_lat=[]
-                
-                for i in data:   
-                    recup_lon_lat = i.get('lon'), i.get('lat')
-                    localisation.append(recup_lon_lat)
-
-                return localisation
-            else:
-                return None
-            #return data
-
-async def main(adresse):#Coroutine principale de asyncio
-    localisation_lon_lat = await recup_coordonnees(adresse)
-    return localisation_lon_lat 
+def coordonnes_plus_proche(coordonnees, coordonnes_samu):
+    coordonnees_proche = None
+    distance_min = float('inf')
+    
+    for element in coordonnees:
+        distance_actuelle = math.sqrt((coordonnes_samu[0] - element[0])**2 + (coordonnes_samu[1] - element[1])**2)
+        if distance_actuelle < distance_min:
+            distance_min = distance_actuelle
+            coordonnees_proche = element
             
-        
+    return coordonnees_proche
 
-# Exécute la boucle principale asyncio
-adresse=input("Veuillez entrer votre localisation : ")
-localisation_lon_lat=asyncio.run(main(adresse))
-print("Votre emplacement est : " + str(localisation_lon_lat))
-
-
+coordonnees = [(5.8877979, 48.6684041), (5.5187049, 45.4289016), (2.32529, 48.780794), (48.780794, 48.8216589), (-71.3043579, 46.6568968)]
+coordonnes_samu = (2.1500621, 48.7941196)
+plus_proche = coordonnes_plus_proche(coordonnees, coordonnes_samu)
+print("Les coordonnées les plus proches de", coordonnes_samu, "sont", plus_proche)

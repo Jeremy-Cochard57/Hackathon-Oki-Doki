@@ -1,7 +1,2 @@
-geopy
-geopy[aiohttp]
-Geocoder
-
-
-pygeocoder
-requests
+aiohttp
+ClientSession

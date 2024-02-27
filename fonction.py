@@ -1,106 +1,72 @@
-"""import geocoder
-
-def verifier_adresse(adresse):
-    try:
-        resultat = geocoder.geocode(adresse)
-        if resultat.valid_address:
-            return True, "Adresse valide."
-        else:
-            return False, "Adresse invalide. Veuillez vérifier et réessayer."
-    except Exception as e:
-        return False, str(e)
-        """
-
-from geopy.geocoders import Nominatim
-from geopy.adapters import AioHTTPAdapter
+#Bibliothèque python
 import asyncio
-from aiohttp import ClientSession
 import math
+from decimal import Decimal
 
-#def __init__():
-    
+#Bibliothèque importer
+from aiohttp import ClientSession
 
-"""def verifier_adresse(adresse):
-    geolocator = Nominatim(user_agent="app hackathon") #instance
-    location = geolocator.geocode(adresse)
+class TraitementAdresse:
+    def __init__(self):
+        self._adresse_samu = "46 Rue Albert Sarraut, 78000 Versailles"
+        self.localisation_adresse_input = None
+        self._list_adresse_complete = []
+        self._list_longitude_latitude= []
+        self._longitude_latitude= []
+        self.coordonnes_samu=asyncio.run(self.get_coordonnees(self._adresse_samu))
+        self._coordonnees_proche=None
 
-    ##return location
-    if location:
-        return "Adresse valide !\nVeuillez vous rendre à cette adresse : " + str(location)
-    else:
-        return "Adresse invalide. Veuillez vérifier et réessayer."
-    """
-        
-"""def adresse_similaire(adresse):
-    geolocator = Nominatim(user_agent="app hackathon") #instance
-    results = geolocator.geocode(adresse, exactly_one=False,addressdetails=True)# Pour obtenir plusieurs résultats si disponibles
-
-    if results:
-        list_adresse=[]
-        for result in results:
-          list_adresse.append(result)
-        return True, (list_adresse)
-    else:
-        return False, ""
-        """
-    
-async def recup_adresse(address):#Fonction asynchroniser pour faire des requêtes en arriere plans
-    async with ClientSession() as session:
-        async with session.get(f"https://nominatim.openstreetmap.org/search?q={address}&format=json") as resultatJSON:
-            data = await resultatJSON.json()#Attendre le traitement du fichier JSON
-            if data:
-                _localisation_adresse=[]
-                adresse=[]
-                
-                for i in data:   
-                    adresse = i.get('display_name')
-                    _localisation_adresse.append(adresse)
-
-                return _localisation_adresse
-            else:
-                return None
-            #return data
+    async def recup_adresse_complete(self, adresse_input):#Fonction asynchroniser pour faire des requêtes en arriere plans
+        async with ClientSession() as session:
+            async with session.get(f"https://nominatim.openstreetmap.org/search?q={adresse_input}&format=json") as donnes_json:
+                resultat_traitement = await donnes_json.json()#Attendre le traitement du fichier JSON
+                if resultat_traitement:
+                    
+                    for clee_json in resultat_traitement:   
+                        adresse_complete = clee_json.get('display_name')
+                        self._list_adresse_complete.append(adresse_complete)
+                    return self._list_adresse_complete
+                else:
+                    return None
             
-async def recup_coordonnees (address):#Fonction asynchroniser pour faire des requêtes en arriere plans
-    async with ClientSession() as session:
-        async with session.get(f"https://nominatim.openstreetmap.org/search?q={address}&format=json") as resultatJSON:
-            data = await resultatJSON.json()#Attendre le traitement du fichier JSON
-            if data:
-                _localisation_coordonnes=[]
-                recup_lon=[]
-                recup_lat=[]
-                recup_lon_lat=[]
-                
-                for i in data:   
-                    recup_lon_lat = i.get('lon'), i.get('lat')
-                    _localisation_coordonnes.append(recup_lon_lat)
+    async def recup_coordonnees_long_lat(self, adresse_input):#Fonction asynchroniser pour faire des requêtes en arriere plans
+        async with ClientSession() as session:
+            async with session.get(f"https://nominatim.openstreetmap.org/search?q={adresse_input}&format=json") as donnes_json:
+                resultat_traitement = await donnes_json.json()#Convertion du fichier JSON en object python
+                if resultat_traitement:
+                    
+                    for clee_json in resultat_traitement:   
+                        _longitude_latitude = clee_json.get('lon'), clee_json.get('lat')
+                        self._list_longitude_latitude.append(_longitude_latitude)
 
-                return _localisation_coordonnes
-            else:
-                return None
+                    return self._list_longitude_latitude
+                else:
+                    return None
 
-async def get_adresse(adresse):#Coroutine principale de asyncio
-    Result_adresse = await recup_adresse(adresse)
-    return Result_adresse
+    async def get_adresse(self, adresse_input):#Coroutine principale de asyncio
+        self.localisation_adresse_input = adresse_input
+        self._list_adresse_complete = await self.recup_adresse_complete(adresse_input)
+        return self._list_adresse_complete
 
-async def get_coordonnees(adresse):#Coroutine principale de asyncio
-    _localisation_lon_lat = await recup_coordonnees(adresse)
-    return _localisation_lon_lat
+    async def get_coordonnees(self, adresse_input):#Coroutine principale de asyncio
+        self._list_longitude_latitude = await self.recup_coordonnees_long_lat(self.localisation_adresse_input)
+        return self._list_longitude_latitude
 
-"""def distance(coord_a_a, coord_a_b, coord_b_a, coord_b_b):
-    _distance_lat=math.dist(coord_a_a, coord_b_a)
-    _distance_lon=math.dist(coord_a_b, coord_b_b)
-    return _distance_lat, _distance_lon
-    """
+    def coordonnes_plus_proche(self):
+        distance_min = float('inf')
+    
 
-def compare_dist(coordonnes_samu, list_coordonnes):
-    result_list_coordonnes=""
-    result_list_coordonnes=i
-    for i in list_coordonnes:
-        
-        if i>result_list_coordonnes:
-            result_list_coordonnes=i
+        for element in self._list_longitude_latitude:
+            distance_actuelle = math.sqrt((Decimal(self.coordonnes_samu[0][0]) - Decimal(element[0]))**2 + (Decimal(self.coordonnes_samu[0][1]) - Decimal(element[1]))**2)
+            if distance_actuelle < distance_min:
+                distance_min = distance_actuelle
+                self._coordonnees_proche = element
+            return element
+    
 
-    return list_coordonnes
+
+
+
+
 
 
