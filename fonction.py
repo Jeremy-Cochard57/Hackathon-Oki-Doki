@@ -55,7 +55,6 @@ class TraitementAdresse:
     def coordonnes_plus_proche(self):
         distance_min = float('inf')
     
-
         for element in self._list_longitude_latitude:
             distance_actuelle = math.sqrt((Decimal(self.coordonnes_samu[0][0]) - Decimal(element[0]))**2 + (Decimal(self.coordonnes_samu[0][1]) - Decimal(element[1]))**2)
             if distance_actuelle < distance_min:
