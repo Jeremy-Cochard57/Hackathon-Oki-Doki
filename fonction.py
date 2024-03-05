@@ -61,8 +61,6 @@ class TraitementAdresse:
                 distance_min = distance_actuelle
                 self._coordonnees_proche = element
             return element
-    
-
 
 
 
